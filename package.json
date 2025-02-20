@@ -1,0 +1,23 @@
+{
+  "name": "x6-onside-test",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@antv/x6": "^2.18.1",
+    "@antv/x6-common": "^2.0.17",
+    "@antv/x6-geometry": "^2.0.5",
+    "javascript-astar": "^0.4.1",
+    "less": "^4.2.2",
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "vite": "^6.1.0"
+  }
+}

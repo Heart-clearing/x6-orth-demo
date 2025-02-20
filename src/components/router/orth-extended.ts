@@ -98,6 +98,18 @@ const getGap = (rect1: any, rect2: any, direction: "h" | "v") => {
   }
 };
 
+/**
+ * @description 
+ * @param result 
+ * @param vertices 
+ * @param padding 
+ * @param sourceBBox 
+ * @param targetBBox 
+ * @param sourceRawBox 
+ * @param targetRawBox 
+ * @param inLine 
+ * @returns 
+ */
 const formateResult = (
   result: Point[],
   vertices: Point[],
@@ -252,12 +264,15 @@ export const orthExtended = function (vertices, options, edgeView) {
   const targetExtraPoint = getExtraPoint(targetSide, targetBBox, 10);
   points.push(targetExtraPoint);
   points.push(targetAnchor);
+  console.log(777, points);
+  
 
   const inLine = isInALine(points); // 所有点位是否在一条直线上
 
   let bearing: Private.Bearings | null = null;
   let result: any = [];
 
+  // debugger
   for (let i = 0, len = points.length - 1; i < len; i += 1) {
     let route: any = null;
     // debugger
@@ -315,11 +330,11 @@ export const orthExtended = function (vertices, options, edgeView) {
       );
       result.push(...route.points);
     } else if (!isOrthogonal) {
-      route = Private.vertexToVertex(from, to, bearing);
+      route = Private.vertexToVertex(from, to, bearing, points[i + 2]);
     } else if (isOrthogonal) {
-      if (sourceBBox.intersectsWithRect(targetBBox.clone().inflate(1))) {
-        route = Private.insideNode(from, to, sourceBBox, targetBBox);
-      }
+      // if (sourceBBox.intersectsWithRect(targetBBox.clone().inflate(1))) {
+      //   route = Private.insideNode(from, to, sourceBBox, targetBBox);
+      // }
     }
     if (route) {
       result.push(...route.points);
@@ -361,7 +376,7 @@ export const orthExtended = function (vertices, options, edgeView) {
 
   // 过滤相同的点位
   result = filterSamePoints(result);
-
+  
   // return result;
   result = formateResult(
     result,
@@ -506,49 +521,28 @@ namespace Private {
 
   const padding = 20;
 
-  export function vertexToVertex(from: Point, to: Point, bearing: Bearings) {
+  export function vertexToVertex(from: Point, to: Point, bearing: Bearings, nextTo?: Point) {
     const p1 = new Point(from.x, to.y);
     const p2 = new Point(to.x, from.y);
 
     const d1 = getBearing(from, p1);
     const d2 = getBearing(from, p2);
     const opposite = bearing ? opposites[bearing] : null;
-    const points: Point[] = [];
 
     let p =
       d1 === bearing || (d1 !== opposite && (d2 === opposite || d2 !== bearing))
         ? p1
         : p2;
-
-    // obstacles.forEach(obstacle => {
-    //   const d1 = getBearing(from, p);
-    //   const d2 = getBearing(p, to)
-    //   if(lineIntersectsRect(from, p, obstacle)) {
-    //     if(d1 === BearingEnum.left || d1 === BearingEnum.right) {
-    //       p = new Point(from.x, obstacle.y + obstacle.height / 2);
-    //     } else {
-    //       if(from.y < p.y) {
-    //         if((from.y + padding) < obstacle.y){
-    //           p.y = obstacle.y - padding
-    //           points.push(p, new Point(to.x, p.y))
-    //         } else {
-    //           p.y = obstacle.y + obstacle.height + padding
-    //           points.push(p, new Point(to.x, p.y))
-    //         }
-    //       } else  {
-    //         if((from.y - padding > p.y)){
-    //           p.y = from.y + padding
-    //           points.push(p, new Point(to.x, p.y))
-    //         } else {
-    //           p.y = from.y - padding
-    //           points.push(p, new Point(to.x, p.y))
-    //         }
-    //       }
-    //     }
-    //     if()
-    //   }
-
-    // })
+    
+    if(nextTo) {
+      const isP1 = p1.x === p.x && p1.y === p.y 
+      if(bearing === BearingEnum.left || bearing === BearingEnum.right) {
+        p = nextTo.y > p.y ?  isP1 ? p1 : p2 : p1;
+      }
+      if(bearing === BearingEnum.top || bearing === BearingEnum.bottom) {
+        p = nextTo.x > p.x ?  isP1 ? p1 : p2 : p1;
+      }
+    }
 
     return { points: [p], direction: getBearing(p, to) };
   }

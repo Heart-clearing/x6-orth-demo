@@ -29,7 +29,7 @@ const vertices = [
 const createTestData = () => {
   const source = graph.addNode({
     x: 460,
-    y: 500,
+    y: 550,
     width: 100,
     height: 50,
     attrs: {
@@ -75,21 +75,29 @@ const createTestData = () => {
       // name: "oneSideExtended",
       // args: { side: ["left", "right"] },
     },
-    vertices,
+    // vertices,
     attrs: {
       line: {
         stroke: "#722ed1",
       },
     },
-    // tools: {
-    //   name: "segments",
-    //   args: {
-    //     snapRadius: 20,
-    //     attrs: {
-    //       fill: "#444",
-    //     },
-    //   },
-    // },
+    tools: [
+      {
+        name: "vertices",
+        args: {
+          attrs: { fill: "#666" },
+        },
+      },
+      // {
+      //   name: "segments",
+      //   args: {
+      //     snapRadius: 20,
+      //     attrs: {
+      //       fill: "#444",
+      //     },
+      //   },
+      // },
+    ],
   });
 
   drawGraphPoints(graph, vertices);
